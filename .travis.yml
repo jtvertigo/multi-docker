@@ -7,7 +7,7 @@ before_install:
   - docker build -t vertigojt/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true vertigojt/react-test npm test
+  - docker run -e CI=true vertigojt/react-test npm run test
 
 after_success:
   - docker build -t vertigojt/multi-client ./client
