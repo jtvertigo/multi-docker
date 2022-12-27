@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t vertigojt/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true vertigojt/react-test npm test
+
+after_success:
+  - docker build -t vertigojt/multi-client ./client
+  - docker build -t vertigojt/multi-nginx ./nginx
+  - docker build -t vertigojt/multi-server ./server
+  - docker build -t vertigojt/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push vertigojt/multi-client
+  - docker push vertigojt/multi-nginx
+  - docker push vertigojt/multi-server
+  - docker push vertigojt/multi-worker
